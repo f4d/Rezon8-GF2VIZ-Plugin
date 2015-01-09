@@ -1,8 +1,5 @@
 <?php
 
-/*
-NNU_HOURS_PER_YR =1872;
-SEIU_HOURS_PER_YR = 
 /**
  * The main plugin controller
  *
@@ -10,15 +7,14 @@ SEIU_HOURS_PER_YR =
  * @subpackage Main Plugin Controller
  * @since 0.1
  */
-class gf2Controller {
-    /**
-     * the class constructor
-     *
-     * @package Rezon8 GF2
-     * @subpackage Main Plugin Controller
-     *
-     * @since 0.1
-     */
+
+ 
+
+
+
+ 
+ class gf2Controller {
+    /** the class constructor   */
     public $series; 
 
     public function __construct() {
@@ -121,6 +117,7 @@ class gf2Controller {
             );
         }   
         foreach($values as $v) {
+			//The Gravity Forms Field Must Be labeled as below - "Hourly Wage" //
             if ($v['label']=='Hourly Wage') {return $v['value'];}
         }
         return 0;
