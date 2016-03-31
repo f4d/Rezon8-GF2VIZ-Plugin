@@ -175,9 +175,17 @@ require_once("models/financial_class.php");
         $str .= "(#1 - #5 below).</p>";
         $str .= "<p><b>Setting the visualizer shortcode</b><br>\n";
         $str .= "[visualizer id=\"N\" data=\"filter_dues_data\" \n";
-        $str .= "series=\"filter_403b_series\"]<br>Where N=the ID from the ";
-        $str .= "visualizer plugin, and filter_dues_data / filter_403b_series ";
+        $str .= "series=\"filter_403b_series\"]<br>Where N=ID of graph from the ";
+        $str .= "visualizer plugin, and 'filter_dues_data' / 'filter_403b_series' ";
         $str .= "refer to filters referenced by the code.</p>";
+        $str .= "<p><b>Setting up the visualizer .CSV file</b><br>";
+        $str .= "Row #1: <i>Time,[Ascending],[Descending]</i><br>";
+        $str .= "Where [Ascending] and [Descending] are the text labels for ascending and descending lines.<br>";
+        $str .= "Row #2: <i>string,number,number</i><br>";
+        $str .= "Row #3 - #N: <i>5 Years,0,0</i><br>";
+        $str .= "It doesn't matter what these rows have as content, but you need a number of ";
+        $str .= "rows equal to the number of points on your graph. So if you have 6 points on your graph, ";
+        $str .= "your CSV should have 8 rows in total.</p>";
         echo $str;
     }
 
