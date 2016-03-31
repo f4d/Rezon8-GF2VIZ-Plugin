@@ -10,7 +10,6 @@
 
 //NNU_HOURS_PER_YR =1872;
 //SEIU_HOURS_PER_YR = 
-require_once("models/financial_class.php");
 
  class gf2Controller {
     public $series; 
