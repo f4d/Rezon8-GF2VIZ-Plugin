@@ -8,13 +8,14 @@
  * @since 0.1
  */
 
- 
+//NNU_HOURS_PER_YR =1872;
+//SEIU_HOURS_PER_YR = 
 require_once("models/financial_class.php");
- 
+
  class gf2Controller {
-    /** the class constructor   */
     public $series; 
 
+    /** the class constructor   */
     public function __construct() {
         $this->series = "NNNNN!";
         if ( is_admin() ){ 
@@ -29,7 +30,7 @@ require_once("models/financial_class.php");
         }
     }
     public function filter_403b_series($series) {
-        $this->series=$series;
+        $this->series = $series;
         return $series;
     }     
     //Graphing functions NNU/SEIU
@@ -154,20 +155,30 @@ require_once("models/financial_class.php");
 	        register_setting( 'plugin_options', 'plugin_options_return_rate'."_$i", array($this,'return_rate_validate') );
 
 	        add_settings_field('label'."_$i", "#$i: Label", array($v,'plugin_setting_string_label'), 'plugin', 'plugin_main');
-	        add_settings_field('interval'."_$i", "#$i: Interval in Years", array($v,'plugin_setting_string_intvl'), 'plugin', 'plugin_main');
-	        add_settings_field('iter'."_$i", "#$i: Iterations", array($v,'plugin_setting_string_iter'), 'plugin', 'plugin_main');
-	        add_settings_field('hrs_per_yr'."_$i", "#$i: Hours Per Year", array($v,'plugin_setting_string_hours_per_yr'), 'plugin', 'plugin_main');
-	        add_settings_field('dues_rate'."_$i", "#$i: Dues Rate", array($v,'plugin_setting_string_dues_rate'), 'plugin', 'plugin_main');
+	        add_settings_field('interval'."_$i", "#$i: Interval in Years<br>(Years Per Graph Bar)", array($v,'plugin_setting_string_intvl'), 'plugin', 'plugin_main');
+	        add_settings_field('iter'."_$i", "#$i: Iterations<br>(# of Bars on Graph)", array($v,'plugin_setting_string_iter'), 'plugin', 'plugin_main');
+	        add_settings_field('hrs_per_yr'."_$i", "#$i: Hours Worked Per Year", array($v,'plugin_setting_string_hours_per_yr'), 'plugin', 'plugin_main');
+	        add_settings_field('dues_rate'."_$i", "#$i: Dues Rate <br>(Fraction, 2% = .02)", array($v,'plugin_setting_string_dues_rate'), 'plugin', 'plugin_main');
 	        add_settings_field('cap_type'."_$i", "#$i: Dues Rate & Cap Type", array($v,'plugin_setting_string_cap_type'), 'plugin', 'plugin_main');
-	        add_settings_field('cap'."_$i", "#$i: Dues Cap", array($v,'plugin_setting_string_cap'), 'plugin', 'plugin_main');
-            add_settings_field('contrib_rate'."_$i", "#$i: Employer Matching Contribution", array($v,'plugin_setting_string_contribution_rate'), 'plugin', 'plugin_main');  
-	        add_settings_field('return_rate'."_$i", "#$i: Rate of Return", array($v,'plugin_setting_string_return_rate'), 'plugin', 'plugin_main');  
+	        add_settings_field('cap'."_$i", "#$i: Dues Cap in $<br>(Per Year, or Per NNU Monthly)", array($v,'plugin_setting_string_cap'), 'plugin', 'plugin_main');
+            add_settings_field('contrib_rate'."_$i", "#$i: Employer Matching Contribution<br>(Fraction, 2% = .02)", array($v,'plugin_setting_string_contribution_rate'), 'plugin', 'plugin_main');  
+	        add_settings_field('return_rate'."_$i", "#$i: Rate of Return<br>(Fraction, 2% = .02)", array($v,'plugin_setting_string_return_rate'), 'plugin', 'plugin_main');  
 			
         }
     }
 
     public function plugin_section_text() {
-        echo '<p>GF2 visualizer settings</p>';
+        $str = '<p>GF2 visualizer settings</p>';
+        $str .= "<p><b>Setting The Gravity Forms Redirect</b><br>\n";
+        $str .= "In the redirect URL, set graph=N, where N is a number 1-5 ";
+        $str .= "that matches the desired plugin settings you wish to use ";
+        $str .= "(#1 - #5 below).</p>";
+        $str .= "<p><b>Setting the visualizer shortcode</b><br>\n";
+        $str .= "[visualizer id=\"N\" data=\"filter_dues_data\" \n";
+        $str .= "series=\"filter_403b_series\"]<br>Where N=the ID from the ";
+        $str .= "visualizer plugin, and filter_dues_data / filter_403b_series ";
+        $str .= "refer to filters referenced by the code.</p>";
+        echo $str;
     }
 
     //validation
