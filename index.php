@@ -9,7 +9,7 @@
 /*
 Plugin Name: Rezon8 GF2 Plugin
 Description: GF2 uses MVC architecture and uses an option page for variable settings.
-Version: 0.1
+Version: 0.2
 */
 require_once( 'includes/gf2-controller.php' );
 $gf2 = new gf2Controller;

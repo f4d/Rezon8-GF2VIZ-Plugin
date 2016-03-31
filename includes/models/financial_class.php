@@ -1341,7 +1341,7 @@ class Financial
 	
 	/**
 	 * Returns the yield on a security that pays periodic interest.
-	 * Use YIELD to calculate bond yield.
+	 * Use calcYield to calculate bond yield.
 	 * 
 	 * Settlement: is the security's settlement date. The security
 	 *  settlement date is the date after the issue date when the
@@ -1362,7 +1362,7 @@ class Financial
 	 *  4 European 30/360
 	 *
 	 */
-	function YIELD($settlement, $maturity, $rate, $pr, $redemption, $frequency, $basis = FINANCIAL_BASIS_MSRB_30_360)
+	function calcYield($settlement, $maturity, $rate, $pr, $redemption, $frequency, $basis = FINANCIAL_BASIS_MSRB_30_360)
 	{
 		if (!$this->_is_valid_basis($basis)) return null;
 		if (!$this->_is_valid_frequency($frequency)) return null;

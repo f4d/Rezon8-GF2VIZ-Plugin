@@ -8,7 +8,7 @@
  * @since 0.1
  */
  
-if( !class_exists( gf2SettingsView ) ):
+if( !class_exists( 'gf2SettingsView' ) ):
  
 /**
  * class to render the html for single posts

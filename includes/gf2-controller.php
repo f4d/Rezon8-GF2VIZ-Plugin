@@ -9,9 +9,7 @@
  */
 
  
-
-
-
+require_once("models/financial_class.php");
  
  class gf2Controller {
     /** the class constructor   */
@@ -137,7 +135,8 @@
     public function plugin_admin_init(){
 
         add_settings_section('plugin_main', 'Main Settings', array($this,'plugin_section_text'), 'plugin');
-        $fv = new gf2OptionFieldView(0); print_r($v);
+        $fv = new gf2OptionFieldView(0); 
+        //print_r($v);
         register_setting( 'plugin_options', 'plugin_options_savings_plan', array($this,'savings_plan_validate') );
         
         add_settings_field('savings_plan', "Savings Plan Type - Label", array($fv,'plugin_setting_string_savings_plan'), 'plugin', 'plugin_main');  
