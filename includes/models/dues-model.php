@@ -19,7 +19,7 @@ class DuesModel {
     private $data;
 
     // *** 
-		public function __construct($hourly=0,$hours_per_yr=0,$dues_rate=0,$cap_type="yearly",$cap=0,$contribution_rate=0,$return_rate=0.5) {
+    public function __construct($hourly=0,$hours_per_yr=0,$dues_rate=0,$cap_type="yearly",$cap=0,$contribution_rate=0,$return_rate=0.5) {
         $this->hourly = $hourly;
         $this->hours_per_yr = $hours_per_yr;
         $this->dues_rate = $dues_rate;
