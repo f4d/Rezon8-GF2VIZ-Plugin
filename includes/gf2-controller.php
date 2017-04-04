@@ -11,10 +11,9 @@
 //NNU_HOURS_PER_YR =1872;
 //SEIU_HOURS_PER_YR = 
 
- class gf2Controller {
+class gf2Controller {
     public $series; 
 
-    /** the class constructor   */
     public function __construct() {
         $this->series = "NNNNN!";
         if ( is_admin() ){ 
@@ -34,7 +33,9 @@
     }     
     //Graphing functions NNU/SEIU
     public function render_gravity_dues_data($data) {
-    	$graph_id = $_GET['graph'];
+    	// *** 
+			// $graph_id = $_GET['graph'] ?: 1;
+			$graph_id = $_GET['graph'];
     	$data = $this->render_graph_data($data,$graph_id);
         return $data;
     }
@@ -45,8 +46,11 @@
     }
     public function render_graph_data($graph_data,$graph_id) {
         //print_r($this->series);
-        $interval = $this->_getPluginOption('plugin_options_interval',$graph_id);
-        $iterations = $this->_getPluginOption('plugin_options_iterations',$graph_id);
+        // ***
+				// [Fri Feb 10 21:05:32.463169 2017] [:error] [pid 6517] [client 68.60.151.162:21912] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 32 bytes) in /nas/content/staging/baycare/wp-content/plugins/rezon8-gf2/includes/models/financial_class.php on line 698
+				// [Fri Feb 10 21:05:32.464437 2017] [:error] [pid 6517] [client 68.60.151.162:21912] PHP Fatal error:  Unknown: Cannot use output buffering in output buffering display handlers in Unknown on line 0			
+        $interval = $this->_getPluginOption('plugin_options_interval',$graph_id) ?: 1;
+        $iterations = $this->_getPluginOption('plugin_options_iterations',$graph_id) ?: 0;
         $hours_per_yr = $this->_getPluginOption('plugin_options_hours_per_yr',$graph_id);
         $dues_rate = $this->_getPluginOption('plugin_options_dues_rate',$graph_id);
         $cap_type = $this->_getPluginOption('plugin_options_cap_type',$graph_id);
@@ -54,20 +58,25 @@
         $contribution_rate = $this->_getPluginOption('plugin_options_contribution_rate',$graph_id);
         $return_rate = $this->_getPluginOption('plugin_options_return_rate',$graph_id);
         $hourly = $this->get_hourly_rate();
- 		/*echo "INTERVAL: $interval<br>";
- 		echo "ITERATIONS: $iterations<br>";
- 		echo "HOURS PER YR: $hours_per_yr<br>";
- 		echo "DUES RATE: $dues_rate<br>";
- 		echo "CAP TYPE: $cap_type<br>";
- 		echo "CAP: $cap<br>";
- 		echo "CONTRIBUTION RATE: $contribution_rate<br>";
- 		echo "HOURLY: $hourly<br>";*/
 
-        $duesModel = new DuesModel($hourly,$hours_per_yr,$dues_rate,$cap_type,$cap,$contribution_rate);
+// 					echo "INTERVAL: $interval<br>";
+// 			 		echo "ITERATIONS: $iterations<br>";
+// 			 		echo "HOURS PER YR: $hours_per_yr<br>";
+// 			 		echo "DUES RATE: $dues_rate<br>";
+// 			 		echo "CAP TYPE: $cap_type<br>";
+// 			 		echo "CAP: $cap<br>";
+// 			 		echo "CONTRIBUTION RATE: $contribution_rate<br>";
+// 			 		echo "HOURLY: $hourly<br>";
+// 			 		ob_flush();
+// 					flush();
+// 					exit();
+
+				$duesModel = new DuesModel($hourly,$hours_per_yr,$dues_rate,$cap_type,$cap,$contribution_rate);
         $data = $duesModel->calculate_annual_contribution();
 
         $savings = array();
         $dues = array();
+				// *** potential mem leak >>>
         for ($i=$interval;$i<=($interval*$iterations);$i=$i+$interval) {
             $savings[] = $duesModel->calculate_return($i,$data['annual_contribution'],$return_rate);
             $dues[] = (-1 * $data['dues_per_yr'] * $i);
@@ -77,18 +86,24 @@
 
         $graph_data = $this->createGraphDataArray($graph_data,$savings,$dues,$interval,$iterations);
         return $graph_data;
-
     }
 
     public function createGraphDataArray( $data, $savings, $dues, $interval, $iterations ) {     
         $arr = get_option('plugin_options_savings_plan');
-        $plan_label = $arr['text_string'];    
-        if ($this->series[1]['label']==$plan_label) {
+        $plan_label = $arr['text_string'];
+        // *** 
+				// [Fri Feb 10 12:04:10.807094 2017] [:error] [pid 21810] [client 68.60.151.162:23002] PHP Warning:  Illegal string offset 'label' in /nas/content/staging/baycare/wp-content/plugins/rezon8-gf2/includes/gf2-controller.php on line 89, referer: http://baycare.staging.wpengine.com/inside-the-nnu/
+				// [Fri Feb 10 12:04:11.934768 2017] [:error] [pid 25064] [client 68.60.151.162:23018] PHP Warning:  Illegal string offset 'label' in /nas/content/staging/baycare/wp-content/plugins/rezon8-gf2/includes/gf2-controller.php on line 89, referer: http://baycare.staging.wpengine.com/dynamic-nnu-dues-graph/?hwage=%2415.00&id=216&form_id=7&graph=1
+        if( isset( $this->series[1]['label'] ) && $this->series[1]['label']==$plan_label ){
             $dues_val = 2;
             $sav_val = 1;
         } else {
             $dues_val = 1;
             $sav_val = 2;
+
+						// *** 
+            $dues_val = 2;
+            $sav_val = 1;
         }
         for ($i=0;$i<$iterations;$i++) {
             for ($j=0;$j<count($data[$i]);$j++) {
@@ -102,9 +117,17 @@
     }
 
     public function get_hourly_rate() {
-        $lead_id = $_GET['id'];
-        $lead = GFFormsModel::get_lead( $lead_id ); 
-        $form = GFFormsModel::get_form_meta( $lead['form_id'] ); 
+				// ***
+				// [Thu Jan 26 20:11:01.493423 2017] [:error] [pid 2877] [client 71.227.63.103:14622] PHP Warning: Invalid argument supplied for foreach() in /nas/content/live/baycare/wp-content/plugins/rezon8-gf2/includes/gf2-controller.php on line 115
+        //	if( !isset( $_GET['id'] ) )
+        //		return 0;
+        $lead_id = $_GET['id'] ?: 0;
+        $lead = GFFormsModel::get_lead( $lead_id );
+        if( empty( $lead ) )
+        	return 0;
+				$form = GFFormsModel::get_form_meta( $lead['form_id'] ); 
+        if( empty( $form ) )
+        	return 0;
         $values= array();
         foreach( $form['fields'] as $field ) {
 

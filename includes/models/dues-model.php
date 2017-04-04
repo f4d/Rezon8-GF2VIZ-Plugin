@@ -18,7 +18,8 @@ class DuesModel {
     private $return_rate;
     private $data;
 
-    public function __construct($hourly,$hours_per_yr,$dues_rate,$cap_type,$cap,$contribution_rate,$return_rate=0.5) {
+    // *** 
+    public function __construct($hourly=0,$hours_per_yr=0,$dues_rate=0,$cap_type="yearly",$cap=0,$contribution_rate=0,$return_rate=0.5) {
         $this->hourly = $hourly;
         $this->hours_per_yr = $hours_per_yr;
         $this->dues_rate = $dues_rate;
@@ -47,7 +48,7 @@ class DuesModel {
         $this->data['dues_per_yr'] = $this->calculate_dues_per_year($this->hourly, $this->data['yr_wage'],$this->dues_rate,$this->cap_type,$this->cap);
         $this->data['annual_contribution'] = $this->annual_contribution($this->data['dues_per_yr'],$this->contribution_rate);
         return $this->data;
-    }    
+    }
     public function calculate_return($num_years,$annual,$rate=0.5) {
         require_once('financial_class.php');
         $f = new Financial;
